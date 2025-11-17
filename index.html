@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Base para Sites com Temas</title>
+    <title>Correção do Enem</title>
 
     <!-- ----- CSS ----- -->
     <link rel="stylesheet" href="./css/reset.css" />
@@ -16,9 +16,61 @@
 
   <!-- ----- Scripts ----- -->
   <script src="./js/themeManager.js" defer></script>
+  <script type="module" src="./js/pages/gabaritos.js" defer></script>
+  <!-- --- Script Específico --- -->
+  <script type="module" src="./js/pages/index.js" defer></script>
 
   <body>
-    <h1></h1>
+    <h1>Correção Enem</h1>
+
+    <section id="section-edição"></section>
+    <section id="section-cor-prova"></section>
+
+    <section id="section-entradas">
+      <section id="section-entrada-prova-dia-1"></section>
+      <section id="section-entrada-prova-dia-2"></section>
+    </section>
+
+    <section id="section-analises">
+      <section id="section-gabarito-linguagens">
+        <h2 class="h2-titulo-disciplina">
+          Linguagens, Códigos e suas Tecnologias
+        </h2>
+        <p class="p-disciplinas">
+          Disciplinas: Português, Literatura, Língua Estrangeira, Artes,
+          Educação Física
+        </p>
+        <form class="form-gabarito"></form>
+      </section>
+
+      <section id="section-gabarito-humanas">
+        <h2 class="h2-titulo-disciplina">
+          Ciências Humanas e suas Tecnologias
+        </h2>
+        <p class="p-disciplinas">
+          Disciplinas: História, Geografia, Filosofia e Sociologia
+        </p>
+        <form class="form-gabarito"></form>
+      </section>
+
+      <section id="section-gabarito-natureza">
+        <h2 class="h2-titulo-disciplina">
+          Ciências da Natureza e suas Tecnologias
+        </h2>
+        <p class="p-disciplinas">Disciplinas: Física, Química e Biologia</p>
+        <form class="form-gabarito"></form>
+      </section>
+
+      <section id="section-gabarito-matematica">
+        <h2 class="h2-titulo-disciplina">Matemática e suas Tecnologias</h2>
+        <p class="p-disciplinas">Disciplina: Matemática</p>
+        <form class="form-gabarito"></form>
+      </section>
+    </section>
+
+    <section id="section-gabarito-prova-dia-1"></section>
+
+    <section id="section-gabarito-prova-dia-2"></section>
 
     <!-- --- Botão de Tema --- -->
     <button id="button-tema" aria-label="Mudar tema"></button>
