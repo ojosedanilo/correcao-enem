@@ -1,0 +1,3 @@
+- Toda vez que marcar algo no gabarito, mudar o texto
+- Botão para salvar o gabarito, ano da prova, cor das provas dos dias 1 e 2, língua estrangeira
+- Botão para carregar o gabarito

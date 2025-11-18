@@ -1,0 +1,35 @@
+/*  
+  Estilo baseado em “Circle progress bar with pure CSS and HTML” — Nikita Hlopov  
+  Fonte: Nikitahl.com :contentReference[oaicite:0]{index=0}  
+  Licença: MIT :contentReference[oaicite:1]{index=1}  
+*/
+
+@property --progress-value {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 0;
+}
+
+@keyframes progress {
+  to {
+  }
+}
+
+.progress-bar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* máscara + progresso */
+  background: radial-gradient(closest-side, white 79%, transparent 80% 100%),
+    conic-gradient(hotpink calc(var(--progress-value) * 1%), pink 0);
+  animation: progress 2s 1 forwards;
+}
+
+.progress-bar::before {
+  counter-reset: percentage var(--progress-value);
+  content: counter(percentage) "%";
+  animation: progress 2s 1 forwards;
+}

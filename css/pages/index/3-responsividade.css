@@ -8,6 +8,7 @@
 
 /* 480px — Smartphones médios/grandes */
 @media (min-width: 480px) {
+  #form-texto-questoes-respostas,
   .div-questoes-respostas {
     max-width: 360px;
   }
@@ -24,9 +25,13 @@
     gap: 2rem;
   }
 
+  #form-texto-questoes-respostas,
+  .div-questoes-respostas {
+    max-width: 800px;
+  }
+
   .div-questoes-respostas {
     width: 100%;
-    max-width: 800px;
     height: calc(15 * var(--altura-linha-questao-resposta));
     flex-wrap: wrap;
   }
@@ -58,6 +63,10 @@
 @media (min-width: 1536px) {
   body {
     margin: 0 2rem;
+  }
+
+  #form-texto-questoes-respostas {
+    max-width: 1200px;
   }
 
   #form-questoes-respostas {

@@ -9,6 +9,7 @@
     <!-- --- Outros Autores --- -->
     <link rel="stylesheet" href="./css/other-authors/reset.css" />
     <link rel="stylesheet" href="./css/other-authors/selector.css" />
+    <link rel="stylesheet" href="./css/other-authors/progress-bar.css" />
     <!-- --- Código Próprio --- -->
     <link rel="stylesheet" href="./css/fonts.css" />
     <link rel="stylesheet" href="./css/colors.css" />
@@ -101,6 +102,45 @@
       </form>
     </section>
 
+    <section id="section-texto-questoes-respostas">
+      <div class="div-titulo-section">
+        <h2>Carregar Gabarito Via Texto</h2>
+        <button
+          class="button-esconder-mostrar-elemento"
+          modo="Esconder"
+          onclick="esconderMostrarElemento('#form-texto-questoes-respostas', this)"
+        >
+          <img
+            src="./assets/icons/eye-slash-fill.svg"
+            alt="Esconder"
+            onload="buscarSvg(this)"
+          />
+        </button>
+      </div>
+      <form id="form-texto-questoes-respostas">
+        <textarea
+          name="textarea-questoes-respostas"
+          id="textarea-questoes-respostas"
+          rows="360"
+          cols="3"
+          placeholder="Escreva seu gabarito aqui, alterando entre número da questão e alternativa correta, por exemplo:
+1
+A
+2
+B
+3
+C
+4
+E
+5
+A"
+        ></textarea>
+        <button id="button-carregar-texto-questoes-respostas" type="submit">
+          Carregar
+        </button>
+      </form>
+    </section>
+
     <section id="section-questoes-respostas">
       <div class="div-titulo-section">
         <h2>Seu Gabarito</h2>
@@ -185,7 +225,115 @@
           />
         </button>
       </div>
-      <div id="div-conteudo-analise"></div>
+
+      <div id="div-conteudo-analise">
+        <div class="div-dados-analise" id="div-analise-geral">
+          <div class="div-porcentagem-acertos progress-bar">
+            <progress
+              value="75"
+              min="0"
+              max="100"
+              style="visibility: hidden; height: 0; width: 0"
+            >
+              75%
+            </progress>
+          </div>
+          <div class="div-acertos-erros">
+            <p class="p-quantidade-de-questoes">Total: <span></span></p>
+            <p class="p-quantidade-de-acertos">Acertos: <span></span></p>
+            <p class="p-quantidade-de-erros">Erros: <span></span></p>
+          </div>
+        </div>
+
+        <div class="div-dados-analise" id="div-analise-linguagens">
+          <div class="div-porcentagem-acertos progress-bar">
+            <progress
+              value="75"
+              min="0"
+              max="100"
+              style="visibility: hidden; height: 0; width: 0"
+            >
+              75%
+            </progress>
+          </div>
+          <div class="div-acertos-erros">
+            <p class="p-quantidade-de-questoes">Total: <span></span></p>
+            <p class="p-quantidade-de-acertos">Acertos: <span></span></p>
+            <p class="p-quantidade-de-erros">Erros: <span></span></p>
+          </div>
+        </div>
+
+        <div class="div-dados-analise" id="div-analise-humanas">
+          <div class="div-porcentagem-acertos progress-bar">
+            <progress
+              value="75"
+              min="0"
+              max="100"
+              style="visibility: hidden; height: 0; width: 0"
+            >
+              75%
+            </progress>
+          </div>
+          <div class="div-acertos-erros">
+            <p class="p-quantidade-de-questoes">Total: <span></span></p>
+            <p class="p-quantidade-de-acertos">Acertos: <span></span></p>
+            <p class="p-quantidade-de-erros">Erros: <span></span></p>
+          </div>
+        </div>
+
+        <div class="div-dados-analise" id="div-analise-natureza">
+          <div class="div-porcentagem-acertos progress-bar">
+            <progress
+              value="75"
+              min="0"
+              max="100"
+              style="visibility: hidden; height: 0; width: 0"
+            >
+              75%
+            </progress>
+          </div>
+          <div class="div-acertos-erros">
+            <p class="p-quantidade-de-questoes">Total: <span></span></p>
+            <p class="p-quantidade-de-acertos">Acertos: <span></span></p>
+            <p class="p-quantidade-de-erros">Erros: <span></span></p>
+          </div>
+        </div>
+
+        <div class="div-dados-analise" id="div-analise-matematica">
+          <div class="div-porcentagem-acertos progress-bar">
+            <progress
+              value="75"
+              min="0"
+              max="100"
+              style="visibility: hidden; height: 0; width: 0"
+            >
+              75%
+            </progress>
+          </div>
+          <div class="div-acertos-erros">
+            <p class="p-quantidade-de-questoes">Total: <span></span></p>
+            <p class="p-quantidade-de-acertos">Acertos: <span></span></p>
+            <p class="p-quantidade-de-erros">Erros: <span></span></p>
+          </div>
+        </div>
+
+        <div class="div-erros-analise" id="div-erros-linguagens">
+          <h2>Erros em Linguagens</h2>
+          <div></div>
+        </div>
+        <div class="div-erros-analise" id="div-erros-humanas">
+          <h2>Erros em Ciências Humanas</h2>
+          <div></div>
+        </div>
+        <div class="div-erros-analise" id="div-erros-natureza">
+          <h2>Erros em Ciências da Natureza</h2>
+          <div></div>
+        </div>
+        <div class="div-erros-analise" id="div-erros-matematica">
+          <h2>Erros em Matemática</h2>
+          <div></div>
+        </div>
+      </div>
     </section>
 
     <section id="section-gabarito-prova-dia-1"></section>

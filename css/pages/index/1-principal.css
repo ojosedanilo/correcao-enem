@@ -13,6 +13,20 @@ section > div {
   align-items: center;
 }
 
+/* -- Divs de Título das Seções -- */
+.div-titulo-section:has(h2):has(.button-esconder-mostrar-elemento) {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.div-titulo-section:has(h2):has(.button-esconder-mostrar-elemento)
+  .button-esconder-mostrar-elemento {
+  margin: auto 0 0.75rem 0;
+}
+
 /* ---------- Seção Informações da Prova ---------- */
 #section-informacoes-prova {
   align-items: center;
@@ -63,6 +77,34 @@ section > div {
 #fieldset-lingua-estrangeira {
 }
 */
+
+/* ---------- Seção Texto das Questões/Respostas ---------- */
+#section-texto-questoes-respostas {
+  align-items: center;
+}
+
+#form-texto-questoes-respostas {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+#textarea-questoes-respostas {
+  max-height: 50dvh;
+  background-color: var(--bg-color-2);
+  color: var(--accent-color-1);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+}
+
+/* ------ Botão Carregar Texto Questões/Respostas ------ */
+#button-carregar-texto-questoes-respostas {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+}
 
 /* ---------- Seção Questões/Respostas ---------- */
 #section-questoes-respostas {
@@ -181,15 +223,49 @@ input[type="radio"]::before {
 }
 
 /* ---------- Seção Análises ---------- */
-.div-titulo-section:has(h2):has(.button-esconder-mostrar-elemento) {
+#div-conteudo-analise {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* -------- Div Dados de Análise -------- */
+.div-dados-analise {
   display: flex;
   flex-direction: row;
   gap: 1rem;
-  align-items: center;
-  justify-content: center;
 }
 
-.div-titulo-section:has(h2):has(.button-esconder-mostrar-elemento)
-  .button-esconder-mostrar-elemento {
-  margin: auto 0 0.75rem 0;
+/* -------- Div Dados de Erros -------- */
+.div-erros-analise,
+.div-erros-analise > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* ------ Div Porcentagem de Acertos ------ */
+.div-porcentagem-acertos {
+  background: radial-gradient(
+      closest-side,
+      var(--bg-color-1) 75%,
+      transparent 80% 100%
+    ),
+    conic-gradient(
+      rgb(0, 199, 0) calc(var(--progress-value) * 1%),
+      rgb(190, 0, 0) 0
+    );
+}
+
+.div-porcentagem-acertos::before {
+  content: none;
+  color: var(--accent-color-1);
+}
+
+/* ------ Div Acertos e Erros ------ */
+.div-acertos-erros {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
