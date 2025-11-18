@@ -93,4 +93,10 @@
   .div-questoes-respostas .div-linha:last-child {
     border-radius: 0 0 1rem 0;
   }
+
+  #button-corrigir-questoes-respostas {
+    /* Ocupa as colunas 1 e 2 */
+    /* Começa na coluna 1 (início do grid) e vai até a coluna 3, que é o começo da terceira coluna). */
+    grid-column: 1 / 3;
+  }
 }

@@ -1,0 +1,49 @@
+/*  
+  Estilo baseado em “Construindo uma modal semântica com o elemento <dialog>” — Angela Caldas  
+  Fonte: https://dev.to/sucodelarangela/construindo-uma-modal-semantica-com-o-elemento-1j88
+*/
+
+.dialog-modal {
+  background: #fafafa;
+  border-radius: 0.5rem;
+  margin: auto;
+  border: 0;
+  padding: 0;
+}
+
+.dialog-modal::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.dialog-modal div {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  align-items: center;
+  text-align: center;
+  width: min(37rem, 80dvw);
+  max-height: 70dvh;
+  gap: 1rem;
+}
+
+.dialog-modal h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  color: #0d114f;
+}
+
+.dialog-modal p {
+  color: #4d5e77;
+}
+
+.button-modal-close {
+  display: flex;
+  align-items: center;
+  clip-path: circle();
+  position: absolute;
+  top: 1.25rem;
+  right: 1rem;
+  height: 1rem;
+  aspect-ratio: 1/1;
+}

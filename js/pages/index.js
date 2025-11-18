@@ -51,18 +51,22 @@ function carregarQuestoesRespostasEmTexto(questoes) {
   textareaQuestoesRespostas.value = texto;
 }
 
-function carregarTextoQuestoesRespostas() {
-  const textareaQuestoesRespostas = document.querySelector(
-    "#textarea-questoes-respostas"
-  );
-  const texto = textareaQuestoesRespostas.value;
+function carregarTextoQuestoesRespostas(texto = "") {
+  // Se o texto estiver vazio, pega ele do textarea
+  if (texto == "") {
+    const textareaQuestoesRespostas = document.querySelector(
+      "#textarea-questoes-respostas"
+    );
+    texto = textareaQuestoesRespostas.value;
+  }
   const linhasTexto = texto.split("\n");
   let gabaritoUsuario = {};
 
-  // Percorre as linhas do texto
+  // Percorre as linhas do texto de dois em dois
   for (let i = 0; i < linhasTexto.length; i += 2) {
     // Pega o número da pergunta e a alteranativa da resposta
     const pergunta = linhasTexto[i];
+    // Se não tiver a linha de índice i + 1, pula a iteração
     if (!linhasTexto[i + 1]) {
       continue;
     }
@@ -334,6 +338,20 @@ function corrigirEMostrarRespostas() {
   );
 }
 
+function abrirModal(seletor) {
+  if (seletor != "") {
+    const modal = document.querySelector(seletor);
+    modal.showModal();
+  }
+}
+
+function fecharModal(seletor) {
+  if (seletor != "") {
+    const modal = document.querySelector(seletor);
+    modal.close();
+  }
+}
+
 function execucaoInicialIndex() {
   carregarCoresCadernos();
   carregarFormulario();
@@ -350,6 +368,12 @@ function execucaoInicialIndex() {
   );
   const buttonCorrigirQuestoesRespostas = document.querySelector(
     "#button-corrigir-questoes-respostas"
+  );
+  const buttonModalSalvarGabarito = document.querySelector(
+    "#button-modal-salvar-gabarito"
+  );
+  const buttonModalCarregarGabarito = document.querySelector(
+    "#button-modal-carregar-gabarito"
   );
 
   // Pega os atributos `name` dos inputs[type="radio"] do gabarito
@@ -382,6 +406,16 @@ function execucaoInicialIndex() {
     event.preventDefault();
     corrigirEMostrarRespostas();
   });
+
+  buttonModalSalvarGabarito.addEventListener("click", () => {
+    abrirModal("#dialog-salvar-gabarito");
+  });
+  buttonModalCarregarGabarito.addEventListener("click", () => {
+    abrirModal("#dialog-carregar-gabarito");
+  });
+
+  // !!!
+  // Pegar todos os botões .button-modal-close e criar os EventListener para fechar os modais
 }
 
 execucaoInicialIndex();

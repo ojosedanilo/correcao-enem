@@ -1,3 +1,8 @@
+/* ----- Variáveis CSS ----- */
+:root {
+  --body-padding-de-baixo: 5rem;
+}
+
 /* ----- Reset ----- */
 *,
 *::before,
@@ -17,7 +22,7 @@ body {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  margin: 0 1rem 1rem 1rem;
+  margin: 0 1rem var(--body-padding-de-baixo) 1rem;
 }
 
 /* --- Inputs --- */
@@ -58,13 +63,7 @@ input[type="radio"]:checked::before {
   transform: scale(1);
 }
 
-/* --- Selects --- */
-/*
-  Integração do select com a paleta personalizada do site
-  — funciona para tema escuro e claro
-*/
-
-/* SELECT */
+/* Selects */
 select {
   border: 1px solid var(--bg-color-6);
   background: var(--bg-color-2);
@@ -82,7 +81,7 @@ select::picker-icon {
   color: var(--accent-color-1);
 }
 
-/* OPÇÕES */
+/* Opções */
 option {
   background: var(--bg-color-2);
   color: var(--bg-color-4);
@@ -115,6 +114,11 @@ option::checkmark {
   color: var(--accent-color-1);
 }
 
+/* Textareas */
+textarea {
+  resize: none;
+}
+
 /* --- Botões --- */
 /* Reset específico para botões */
 button {
@@ -125,6 +129,7 @@ button {
   font-size: 1rem;
   padding: 0.55rem 1.1rem;
   border-radius: 0.5rem;
+  max-width: 300px;
 
   background-color: var(--bg-color-3);
   color: var(--bg-color-4);
@@ -170,6 +175,68 @@ button svg {
 button:hover svg {
   transform: scale(1.1);
 }
+
+/* ----- Botões Salvar e Carregar Gabarito ----- */
+#div-carregar-salvar-gabarito {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+#div-carregar-salvar-gabarito button {
+  background-color: var(--bg-color-4);
+  border: none;
+  border-radius: 50%;
+  width: 4rem;
+  height: 4rem;
+  cursor: pointer;
+  padding: 1.25rem;
+}
+
+#div-carregar-salvar-gabarito button svg {
+  fill: var(--bg-color-1);
+  width: 100%;
+  height: 100%;
+}
+
+.dialog-modal {
+  background-color: var(--bg-color-1);
+  color: var(--accent-color-1);
+}
+
+.dialog-modal textarea {
+  padding: 0.5rem;
+  background-color: var(--bg-color-2);
+  color: inherit;
+  flex-grow: 1;
+  min-height: 4rem;
+  height: 100dvh;
+  max-height: 50dvh;
+  width: 100%;
+  max-width: 50dvh;
+  border-radius: 1rem;
+}
+
+.dialog-modal div > * {
+  color: inherit;
+}
+
+.button-modal-close {
+  height: 1.5rem;
+  padding: 0.3rem;
+}
+
+.button-modal-close svg {
+  fill: var(--accent-color-1);
+  height: 100%;
+  aspect-ratio: 1/ 1;
+}
+
+/* --- Botão de Salvar Gabarito --- */
+/* --- Botão de Carregar Gabarito --- */
 
 /* ----- Botão de Tema ----- */
 #button-tema {

@@ -8,6 +8,7 @@
     <!-- ----- CSS ----- -->
     <!-- --- Outros Autores --- -->
     <link rel="stylesheet" href="./css/other-authors/reset.css" />
+    <link rel="stylesheet" href="./css/other-authors/modal.css" />
     <link rel="stylesheet" href="./css/other-authors/selector.css" />
     <link rel="stylesheet" href="./css/other-authors/progress-bar.css" />
     <!-- --- Código Próprio --- -->
@@ -340,7 +341,99 @@ A"
 
     <section id="section-gabarito-prova-dia-2"></section>
 
+    <!-- ----- Botões Salvar e Carregar Gabarito ----- -->
+    <div id="div-carregar-salvar-gabarito">
+      <!-- --- Botão Salvar Gabarito --- -->
+      <button id="button-modal-salvar-gabarito">
+        <img
+          src="./assets/icons/download.svg"
+          alt="Carregar Gabarito"
+          onload="buscarSvg(this)"
+        />
+      </button>
+      <!-- --- Botão Carregar Gabarito --- -->
+      <button id="button-modal-carregar-gabarito">
+        <img
+          src="./assets/icons/floppy-fill.svg"
+          alt="Salvar Gabarito"
+          onload="buscarSvg(this)"
+        />
+      </button>
+    </div>
+
     <!-- --- Botão de Tema --- -->
     <button id="button-tema" aria-label="Mudar tema"></button>
+
+    <!-- ----- Modais ----- -->
+    <!-- --- Modal Salvar Gabarito --- -->
+    <dialog
+      class="dialog-modal"
+      id="dialog-salvar-gabarito"
+      onmousedown="event.target==this && this.close(-1)"
+      onclose="this.returnValue==-1"
+    >
+      <div>
+        <h2 id="h2-modal-title">Salvar Gabarito</h2>
+
+        <p class="p-modal-fieldset-edicao-prova">
+          Ano de Edição da Prova: <span></span>
+        </p>
+        <p class="p-modal-fieldset-cor-prova-dia-1">
+          Cor da Prova do 1º dia: <span></span>
+        </p>
+        <p class="p-modal-fieldset-cor-prova-dia-2">
+          Cor da Prova do 2º dia: <span></span>
+        </p>
+        <p class="p-modal-fieldset-lingua-estrangeira">
+          Língua Estrangeira: <span></span>
+        </p>
+        <textarea
+          readonly
+          class="textarea-modal-gabarito"
+          placeholder="A
+B
+C
+D"
+        ></textarea>
+        <button class="button-modal-salvar" type="submit">Salvar</button>
+
+        <button
+          type="button"
+          class="button-modal-close"
+          aria-label="Fechar modal"
+        >
+          <img
+            src="./assets/icons/x-lg.svg"
+            alt="Fechar"
+            onload="buscarSvg(this)"
+          />
+        </button>
+      </div>
+    </dialog>
+    <!-- --- Modal Carregar Gabarito --- -->
+    <dialog
+      class="dialog-modal"
+      id="dialog-carregar-gabarito"
+      onmousedown="event.target==this && this.close(-1)"
+      onclose="this.returnValue==-1"
+    >
+      <div>
+        <h2 id="dialog-title">Carregar Gabarito</h2>
+
+        <button class="button-modal-carregar" type="submit">Carregar</button>
+
+        <button
+          type="button"
+          class="button-modal-close"
+          aria-label="Fechar modal"
+        >
+          <img
+            src="./assets/icons/x-lg.svg"
+            alt="Fechar"
+            onload="buscarSvg(this)"
+          />
+        </button>
+      </div>
+    </dialog>
   </body>
 </html>
