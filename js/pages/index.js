@@ -26,23 +26,29 @@ function carregarCoresCadernos() {
 }
 
 function carregarQuestoesRespostasEmTexto(questoes) {
+  // Pega a caixa de texto e pega os dados do formulário
+  const textareaQuestoesRespostas = document.querySelector(
+    "#textarea-questoes-respostas"
+  );
   const formQuestoesRespostas = document.querySelector(
     "#form-questoes-respostas"
   );
   const dadosForm = new FormData(formQuestoesRespostas);
+  // Pega a última questão e seu texto
   const ultimaQuestao = questoes[questoes.length - 1];
   let texto = "";
-
+  // Percorre cada questão das questões
   for (const questao of questoes) {
-    texto += `${questao}\n${questao}`;
+    const respostaUsuario = Object.fromEntries(dadosForm)[questao] || "";
+    // Coloca no texto a questão, pula uma linha e coloca a alternativa
+    texto += `${questao}\n${respostaUsuario.toUpperCase()}`;
     if (questao != ultimaQuestao) {
+      // Pula uma linha se não for a última questão
       texto += `\n`;
     }
   }
-
-  // !!!
-  console.log(texto);
-  console.log(dadosForm);
+  // Define o conteúdo da caixa de texto
+  textareaQuestoesRespostas.value = texto;
 }
 
 function carregarTextoQuestoesRespostas() {
@@ -57,6 +63,9 @@ function carregarTextoQuestoesRespostas() {
   for (let i = 0; i < linhasTexto.length; i += 2) {
     // Pega o número da pergunta e a alteranativa da resposta
     const pergunta = linhasTexto[i];
+    if (!linhasTexto[i + 1]) {
+      continue;
+    }
     const resposta = linhasTexto[i + 1].toUpperCase();
     // Atualiza o gabarito do usuário
     Object.assign(gabaritoUsuario, { [pergunta]: resposta });
@@ -325,11 +334,14 @@ function corrigirEMostrarRespostas() {
   );
 }
 
-async function execucaoInicialIndex() {
+function execucaoInicialIndex() {
   carregarCoresCadernos();
   carregarFormulario();
 
   const selectEdicaoProva = document.querySelector("#select-edicao-prova");
+  const textareaQuestoesRespostas = document.querySelector(
+    "#textarea-questoes-respostas"
+  );
   const buttonCarregarTextoQuestoesRespostas = document.querySelector(
     "#button-carregar-texto-questoes-respostas"
   );
@@ -353,13 +365,17 @@ async function execucaoInicialIndex() {
     carregarCoresCadernos();
   });
 
-  buttonCarregarTextoQuestoesRespostas.addEventListener("click", (event) => {
-    event.preventDefault();
+  textareaQuestoesRespostas.addEventListener("change", () => {
     carregarTextoQuestoesRespostas();
   });
 
-  formQuestoesRespostas.addEventListener("click", () => {
+  formQuestoesRespostas.addEventListener("change", () => {
     carregarQuestoesRespostasEmTexto(questoes);
+  });
+
+  buttonCarregarTextoQuestoesRespostas.addEventListener("click", (event) => {
+    event.preventDefault();
+    carregarTextoQuestoesRespostas();
   });
 
   buttonCorrigirQuestoesRespostas.addEventListener("click", (event) => {
