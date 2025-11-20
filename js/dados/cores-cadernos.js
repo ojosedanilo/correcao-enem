@@ -65,7 +65,7 @@ const coresCadernos = {
   }, // A cor rosa foi substituída pela verde no dia 1.
   2025: {
     dia_1: ["Amarelo", "Azul", "Branco", "Verde"],
-    dia_2: ["Amarelo", "Azul", "Branco", "Cinza", "Verde"],
+    dia_2: ["Amarelo", "Azul", "Cinza", "Verde"],
   }, // A cor verde foi adicionada ao dia 2 também.
 };
 

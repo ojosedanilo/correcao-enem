@@ -30,6 +30,15 @@
     max-width: 800px;
   }
 
+  #form-texto-questoes-respostas .div-row-of-buttons {
+    flex-direction: row;
+    gap: 2rem;
+  }
+
+  #form-texto-questoes-respostas div button {
+    margin: 0;
+  }
+
   .div-questoes-respostas {
     width: 100%;
     height: calc(15 * var(--altura-linha-questao-resposta));
@@ -94,7 +103,7 @@
     border-radius: 0 0 1rem 0;
   }
 
-  #button-corrigir-questoes-respostas {
+  #form-questoes-respostas .button-corrigir-questoes-respostas {
     /* Ocupa as colunas 1 e 2 */
     /* Começa na coluna 1 (início do grid) e vai até a coluna 3, que é o começo da terceira coluna). */
     grid-column: 1 / 3;

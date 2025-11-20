@@ -222,10 +222,17 @@ function definirDadosDivDadosAnalise(seletor, total, acertos, erros) {
 }
 
 function corrigirEMostrarRespostas() {
-  document.querySelector("#div-erros-linguagens > div").replaceChildren();
-  document.querySelector("#div-erros-humanas > div").replaceChildren();
-  document.querySelector("#div-erros-natureza > div").replaceChildren();
-  document.querySelector("#div-erros-matematica > div").replaceChildren();
+  // Limpa as DIVs de erros
+  const divsErros = {
+    linguagens: "#div-erros-linguagens > div",
+    humanas: "#div-erros-humanas > div",
+    natureza: "#div-erros-natureza > div",
+    matematica: "#div-erros-matematica > div",
+  };
+  Object.values(divsErros).forEach((sel) =>
+    document.querySelector(sel).replaceChildren()
+  );
+
   // Pega os Formulários
   const selectEdicaoProva = document.querySelector("#select-edicao-prova");
   const selectCorProvaDia1 = document.querySelector("#select-cor-prova-dia-1");
@@ -233,109 +240,117 @@ function corrigirEMostrarRespostas() {
   const selectLinguaEstrangeira = document.querySelector(
     "#select-lingua-estrangeira"
   );
-  // Pega o ano de edição e as cores das provas dos dia 1 e 2
-  const edicaoProva = selectEdicaoProva.value;
-  const corProvaDia1 = selectCorProvaDia1.value;
-  const corProvaDia2 = selectCorProvaDia2.value;
-  // Pegas os gabaritos da edição, do dia 1, do dia 2 e o gabarito completo
+
+  // Pega os Formulários
+  const edicaoProva = document.querySelector("#select-edicao-prova").value;
+  const corProvaDia1 = document.querySelector("#select-cor-prova-dia-1").value;
+  const corProvaDia2 = document.querySelector("#select-cor-prova-dia-2").value;
+  // Inglês -> "I"; Caso contrário -> "E"
+  const sufixoIdioma =
+    document.querySelector("#select-lingua-estrangeira").value === "Inglês"
+      ? "I"
+      : "E";
+
+  // Pegas os gabaritos da edição, do dia 1 e do dia 2
   const gabaritoEdicao = gabaritos[edicaoProva];
   const gabaritoDia1 = pegarGabarito(gabaritoEdicao["dia_1"], corProvaDia1);
   const gabaritoDia2 = pegarGabarito(gabaritoEdicao["dia_2"], corProvaDia2);
-  const gabaritoCompleto = { ...gabaritoDia1, ...gabaritoDia2 };
+
+  // Cria gabarito completo e remove questões anuladas, Redação e da língua estrangeira que não foi escolhida
+  const gabaritoCompleto = Object.fromEntries(
+    Object.entries({ ...gabaritoDia1, ...gabaritoDia2 }).filter(
+      ([key, value]) => {
+        // Remove as questões anuladas ou de Redação
+        if (value === "Anulado" || key === "Red") return false;
+
+        // Mantém apenas a língua correta (Inglês -> "I"; Espanhol -> "E")
+        if (key.endsWith("I") && sufixoIdioma !== "I") return false;
+        if (key.endsWith("E") && sufixoIdioma !== "E") return false;
+
+        return true;
+      }
+    )
+  );
+
   // Pega as respostas do usuário
   const respostasUsuario = obterRespostas();
-  // Inglês -> "I"; Caso contrário -> "E"
-  let sufixoIdioma = selectLinguaEstrangeira.value == "Inglês" ? "I" : "E";
-  // Dados de análise
-  const geralTotalQuestoes = 180;
+
+  // Dados gerais
+  const geralTotalQuestoes = Object.keys(gabaritoCompleto).length;
   let geralAcertosQuestoes = 0;
-  let geralErrosQuestoes = 0;
-  const areaTotalQuestoes = 45;
-  let areaAcertosQuestoes = 0;
-  let areaErrosQuestoes = 0;
-  let divErrosArea;
 
-  // Percorre as questões e respostas do gabarito completo
-  for (let i = 1; i < 181; i++) {
-    let questao = i;
-    if (i < 6) {
-      questao = `${i}${sufixoIdioma}`;
-    }
-    const resposta = gabaritoCompleto[questao];
+  // Áreas: Linguagens, Humanas, Natureza, Matemática
+  const AREAS = [
+    { nome: "linguagens", min: 1, max: 45 },
+    { nome: "humanas", min: 46, max: 90 },
+    { nome: "natureza", min: 91, max: 135 },
+    { nome: "matematica", min: 136, max: 180 },
+  ];
 
-    if (respostasUsuario[questao] && i > 0 && i < 46) {
-      divErrosArea = document.querySelector("#div-erros-linguagens > div");
-    } else if (respostasUsuario[questao] && i > 45 && i < 91) {
-      divErrosArea = document.querySelector("#div-erros-humanas > div");
-    } else if (respostasUsuario[questao] && i > 90 && i < 136) {
-      divErrosArea = document.querySelector("#div-erros-natureza > div");
-    } else if (respostasUsuario[questao] && i > 135 && i < 181) {
-      divErrosArea = document.querySelector("#div-erros-matematica > div");
-    }
+  const dadosAreas = {
+    linguagens: { total: 0, acertos: 0 },
+    humanas: { total: 0, acertos: 0 },
+    natureza: { total: 0, acertos: 0 },
+    matematica: { total: 0, acertos: 0 },
+  };
 
-    // Verifica se o usuário respondeu e se a resposta do usuário está correta
-    if (respostasUsuario[questao] && respostasUsuario[questao] == resposta) {
-      // Se sim, ele ganha um acerto no geral e na área específica
-      geralAcertosQuestoes += 1;
-      areaAcertosQuestoes += 1;
-    } else if (
-      respostasUsuario[questao] &&
-      respostasUsuario[questao] != resposta
-    ) {
+  // Função para descobrir a área da questão
+  function descobrirArea(numero) {
+    return AREAS.find((a) => numero >= a.min && numero <= a.max);
+  }
+
+  // Percorre o gabarito completo
+  for (let questaoKey of Object.keys(gabaritoCompleto)) {
+    // Remove "I" ou "E" para obter o número real da questão
+    const numeroQuestao = Number(questaoKey.replace("I", "").replace("E", ""));
+
+    // Descobre a área
+    const area = descobrirArea(numeroQuestao);
+    if (!area) continue;
+
+    // Aumenta o total de questões da área
+    dadosAreas[area.nome].total++;
+
+    const respostaCerta = gabaritoCompleto[questaoKey];
+    const respostaUsuario = respostasUsuario[questaoKey];
+
+    // Usuário não respondeu → ignora
+    if (!respostaUsuario) continue;
+
+    // Verifica se o usuário acertou
+    if (respostaUsuario === respostaCerta) {
+      geralAcertosQuestoes++;
+      dadosAreas[area.nome].acertos++;
+    } else {
+      // Mostra o erro na área correspondente
+      const divErro = document.querySelector(divsErros[area.nome]);
       const p = document.createElement("p");
-      p.innerHTML = `<b>${questao}</b>: certo = <b>${resposta}</b>, seu = ${respostasUsuario[questao]}`;
-      divErrosArea.appendChild(p);
-    }
-    // Define os dados da análise para cada área do conhecimento ao chegar na última questão dela
-    if (questao == 45) {
-      // Linguagens
-      definirDadosDivDadosAnalise(
-        "#div-analise-linguagens",
-        areaTotalQuestoes,
-        areaAcertosQuestoes,
-        areaTotalQuestoes - areaAcertosQuestoes
-      );
-    } else if (questao == 90) {
-      // Humanas
-      definirDadosDivDadosAnalise(
-        "#div-analise-humanas",
-        areaTotalQuestoes,
-        areaAcertosQuestoes,
-        areaTotalQuestoes - areaAcertosQuestoes
-      );
-    } else if (questao == 135) {
-      // Natureza
-      definirDadosDivDadosAnalise(
-        "#div-analise-natureza",
-        areaTotalQuestoes,
-        areaAcertosQuestoes,
-        areaTotalQuestoes - areaAcertosQuestoes
-      );
-    } else if (questao == 180) {
-      // Matemática
-      definirDadosDivDadosAnalise(
-        "#div-analise-matematica",
-        areaTotalQuestoes,
-        areaAcertosQuestoes,
-        areaTotalQuestoes - areaAcertosQuestoes
-      );
-    }
-    // Zera os erros e acertos das questões da área para que não haja interferência na próxima
-    if (questao == 45 || questao == 90 || questao == 135 || questao == 180) {
-      areaAcertosQuestoes = 0;
-      areaErrosQuestoes = 0;
+      p.innerHTML = `<b>${questaoKey}</b>: certo = <b>${respostaCerta}</b>, seu = ${respostaUsuario}`;
+      divErro.appendChild(p);
     }
   }
 
-  geralErrosQuestoes = geralTotalQuestoes - geralAcertosQuestoes;
+  // Calcula os erros gerais
+  const geralErrosQuestoes = geralTotalQuestoes - geralAcertosQuestoes;
 
-  // Dados Gerais
+  // --- Dados da Análise Geral ---
   definirDadosDivDadosAnalise(
     "#div-analise-geral",
     geralTotalQuestoes,
     geralAcertosQuestoes,
     geralErrosQuestoes
   );
+
+  // --- Dados por Área ---
+  AREAS.forEach((area) => {
+    const dados = dadosAreas[area.nome];
+    definirDadosDivDadosAnalise(
+      `#div-analise-${area.nome}`,
+      dados.total,
+      dados.acertos,
+      dados.total - dados.acertos
+    );
+  });
 }
 
 function abrirModal(seletor) {
@@ -366,8 +381,8 @@ function execucaoInicialIndex() {
   const formQuestoesRespostas = document.querySelector(
     "#form-questoes-respostas"
   );
-  const buttonCorrigirQuestoesRespostas = document.querySelector(
-    "#button-corrigir-questoes-respostas"
+  const buttonsCorrigirQuestoesRespostas = document.querySelectorAll(
+    ".button-corrigir-questoes-respostas"
   );
   const buttonModalSalvarGabarito = document.querySelector(
     "#button-modal-salvar-gabarito"
@@ -402,10 +417,12 @@ function execucaoInicialIndex() {
     carregarTextoQuestoesRespostas();
   });
 
-  buttonCorrigirQuestoesRespostas.addEventListener("click", (event) => {
-    event.preventDefault();
-    corrigirEMostrarRespostas();
-  });
+  for (const buttonCorrigirQuestoesRespostas of buttonsCorrigirQuestoesRespostas) {
+    buttonCorrigirQuestoesRespostas.addEventListener("click", (event) => {
+      event.preventDefault();
+      corrigirEMostrarRespostas();
+    });
+  }
 
   buttonModalSalvarGabarito.addEventListener("click", () => {
     abrirModal("#dialog-salvar-gabarito");

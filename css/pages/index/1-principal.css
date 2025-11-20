@@ -87,7 +87,18 @@ section > div {
   width: 100%;
   display: flex;
   flex-direction: column;
+}
+
+#form-texto-questoes-respostas,
+#form-texto-questoes-respostas .div-row-of-buttons {
   gap: 1rem;
+}
+
+#form-texto-questoes-respostas .div-row-of-buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 #textarea-questoes-respostas {
@@ -215,7 +226,7 @@ input[type="radio"]::before {
 }
 
 /* ------ Botão Corrigir Questões/Respostas ------ */
-#button-corrigir-questoes-respostas {
+.button-corrigir-questoes-respostas {
   width: 100%;
   margin: 0 auto;
 }
