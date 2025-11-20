@@ -225,3 +225,49 @@ export function abrirModal(sel) {
 export function fecharModal(sel) {
   document.querySelector(sel)?.close();
 }
+
+// !!!
+export function obterDadosSalvarGabarito() {
+  return {
+    edicao_prova: document.querySelector("#select-edicao-prova").value,
+    cor_prova_dia_1: document.querySelector("#select-cor-prova-dia-1").value,
+    cor_prova_dia_2: document.querySelector("#select-cor-prova-dia-2").value,
+    lingua_estrangeira: document.querySelector("#select-lingua-estrangeira")
+      .value,
+    gabarito_texto: document.querySelector("#textarea-questoes-respostas")
+      .value,
+  };
+}
+
+export function definirDadosModalSalvarGabarito(dados) {
+  const dialogSalvarGabarito = document.querySelector(
+    "#dialog-salvar-gabarito"
+  );
+  const pEdicaoProva = dialogSalvarGabarito.querySelector(
+    ".p-modal-edicao-prova span"
+  );
+  const pCorProvaDia1 = dialogSalvarGabarito.querySelector(
+    ".p-modal-cor-prova-dia-1 span"
+  );
+  const pCorProvaDia2 = dialogSalvarGabarito.querySelector(
+    ".p-modal-cor-prova-dia-2 span"
+  );
+  const pLinguaEstrangeira = dialogSalvarGabarito.querySelector(
+    ".p-modal-lingua-estrangeira span"
+  );
+  const pGabarito = dialogSalvarGabarito.querySelector(
+    ".textarea-modal-gabarito"
+  );
+
+  pEdicaoProva.textContent = dados["edicao_prova"];
+  pCorProvaDia1.textContent = dados["cor_prova_dia_1"];
+  pCorProvaDia2.textContent = dados["cor_prova_dia_2"];
+  pLinguaEstrangeira.textContent = dados["lingua_estrangeira"];
+  pGabarito.value = dados["gabarito_texto"];
+}
+
+export function carregarListaGabaritosSalvos() {
+  const ulGabaritosSalvos = document.querySelector("#ul-gabaritos-salvos");
+
+  ulGabaritosSalvos.replaceChildren();
+}

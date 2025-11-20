@@ -4,8 +4,16 @@ import {
   carregarTextoQuestoesRespostas,
   carregarQuestoesRespostasEmTexto,
   abrirModal,
-  fecharModal,
+  obterDadosSalvarGabarito,
+  definirDadosModalSalvarGabarito,
+  carregarListaGabaritosSalvos,
 } from "./ui.js";
+
+import {
+  adicionarGabarito,
+  apagarGabarito,
+  listarGabaritosSalvos,
+} from "./armazenamento.js";
 
 import {
   pegarGabarito,
@@ -30,12 +38,15 @@ function execucaoInicialIndex() {
   const btnsCorrigir = document.querySelectorAll(
     ".button-corrigir-questoes-respostas"
   );
+  const btnsFecharModal = document.querySelectorAll(".button-modal-close");
   const btnSalvarGabarito = document.querySelector(
     "#button-modal-salvar-gabarito"
   );
   const btnCarregarGabarito = document.querySelector(
     "#button-modal-carregar-gabarito"
   );
+  const btnModalSalvar = document.querySelector("#button-modal-salvar");
+  const btnModalCarregar = document.querySelector("#button-modal-carregar");
 
   const questoes = new Set(
     Array.from(
@@ -89,11 +100,33 @@ function execucaoInicialIndex() {
   }
 
   btnSalvarGabarito.addEventListener("click", () => {
+    const dados = obterDadosSalvarGabarito();
+    definirDadosModalSalvarGabarito(dados);
     abrirModal("#dialog-salvar-gabarito");
   });
+
   btnCarregarGabarito.addEventListener("click", () => {
+    carregarListaGabaritosSalvos();
     abrirModal("#dialog-carregar-gabarito");
   });
+
+  btnModalSalvar.addEventListener("click", () => {
+    const dados = obterDadosSalvarGabarito();
+    adicionarGabarito(dados);
+  });
+
+  btnModalCarregar.addEventListener("click", () => {});
+
+  for (const btn of btnsFecharModal) {
+    btn.addEventListener("click", function () {
+      let element = this;
+      // Vai pegando o pai do elemento até que ele seja um <dialog>
+      while (element.parentNode.tagName.toLowerCase() != "dialog") {
+        element = element.parentNode;
+      }
+      element = element.parentNode.close();
+    });
+  }
 }
 
 execucaoInicialIndex();
