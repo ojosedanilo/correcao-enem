@@ -1,7 +1,7 @@
 {
   "name": "enem-correcao",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -19,7 +19,7 @@
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",
-    "typescript": "^5.6.3",
+    "typescript": "^5.5.3",
     "vite": "^5.4.10"
   }
 }
