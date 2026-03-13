@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTheme } from './hooks/useTheme'
-import { useEnemState } from './hooks/useEnemState'
+import { useEnemState, EDICOES_SEM_TRI } from './hooks/useEnemState'
 import { ProvaInfoSection } from './components/ProvaInfoSection'
 import { TextoGabaritoSection } from './components/TextoGabaritoSection'
 import { GabaritoAlunoSection } from './components/GabaritoAlunoSection'
@@ -8,27 +8,28 @@ import { AnalysesSection } from './components/AnalysesSection'
 import { SaveModal, LoadModal } from './components/SaveLoadModals'
 import { Sun, Moon, Save, Upload } from './components/ui/icons'
 import { gabaritos } from './data/gabaritos'
-import { coresCadernos } from './data/coresCadernos'
 import { pegarGabarito, gerarGabaritoCompleto, textoParaRespostas } from './utils/gabarito'
-import type { ResultadoDetalhado, AreaKey, GabaritoSalvo } from './types'
-import { AREAS_META } from './types'
+import { calcularTodasNotasTRI } from '../tri/scorer'
+import type { ResultadoDetalhado, AreaKey, GabaritoSalvo, NotasTRI } from './types'
+
+// ── Correção simples (acertos/erros por área) ────────────────────────────────
 
 function corrigirGabarito(
   gabaritoCompleto: Record<string, string>,
   respostasUsuario: Record<string, string>
 ): ResultadoDetalhado {
   const areaRanges: Record<AreaKey, { min: number; max: number }> = {
-    linguagens: { min: 1, max: 45 },
-    humanas: { min: 46, max: 90 },
-    natureza: { min: 91, max: 135 },
+    linguagens: { min: 1,   max: 45  },
+    humanas:    { min: 46,  max: 90  },
+    natureza:   { min: 91,  max: 135 },
     matematica: { min: 136, max: 180 },
   }
 
   const resultado: ResultadoDetalhado = {
-    geral: { total: 0, acertos: 0, erros: 0 },
+    geral:      { total: 0, acertos: 0, erros: 0 },
     linguagens: { total: 0, acertos: 0, erros: 0 },
-    humanas: { total: 0, acertos: 0, erros: 0 },
-    natureza: { total: 0, acertos: 0, erros: 0 },
+    humanas:    { total: 0, acertos: 0, erros: 0 },
+    natureza:   { total: 0, acertos: 0, erros: 0 },
     matematica: { total: 0, acertos: 0, erros: 0 },
     errosPorArea: { linguagens: [], humanas: [], natureza: [], matematica: [] },
   }
@@ -36,7 +37,7 @@ function corrigirGabarito(
   resultado.geral.total = Object.keys(gabaritoCompleto).length
 
   for (const [key, certa] of Object.entries(gabaritoCompleto)) {
-    const num = Number(key.replace('I', '').replace('E', ''))
+    const num = Number(key.replace(/[IE]$/, ''))
     const areaKey = (Object.entries(areaRanges).find(
       ([, r]) => num >= r.min && num <= r.max
     )?.[0] ?? 'linguagens') as AreaKey
@@ -44,7 +45,7 @@ function corrigirGabarito(
     resultado[areaKey].total++
 
     const usuario = respostasUsuario[key]
-    if (!usuario) continue // em branco
+    if (!usuario) continue
 
     if (usuario === certa) {
       resultado.geral.acertos++
@@ -63,6 +64,8 @@ function corrigirGabarito(
   return resultado
 }
 
+// ── Componente principal ─────────────────────────────────────────────────────
+
 export function EnemCorrecaoFeature() {
   const { theme, toggle: toggleTheme } = useTheme()
   const {
@@ -73,9 +76,12 @@ export function EnemCorrecaoFeature() {
     setResposta,
     textoGabarito,
     setTextoGabarito,
-    carregarTextoemRespostas,
     resultado,
     setResultado,
+    notasTRI,
+    setNotasTRI,
+    triCarregando,
+    setTriCarregando,
     EDICOES,
   } = useEnemState()
 
@@ -89,7 +95,7 @@ export function EnemCorrecaoFeature() {
     setRespostasAluno(respostas)
   }
 
-  function handleCorrigir() {
+  async function handleCorrigir() {
     const edicaoGabaritos = gabaritos[provaInfo.edicao]
     if (!edicaoGabaritos) {
       alert(`Gabarito para ${provaInfo.edicao} não encontrado.`)
@@ -105,11 +111,41 @@ export function EnemCorrecaoFeature() {
     }
 
     const gabaritoCompleto = gerarGabaritoCompleto(gDia1, gDia2, linguaSufixo)
+
+    // 1. Correção simples — síncrona e imediata
     const res = corrigirGabarito(gabaritoCompleto, respostasAluno)
     setResultado(res)
+    setNotasTRI(null)
 
-    // Scroll to analyses
     document.getElementById('section-analises')?.scrollIntoView({ behavior: 'smooth' })
+
+    // 2. TRI — assíncrono; só tenta se o ano tiver dados disponíveis
+    if (EDICOES_SEM_TRI.has(provaInfo.edicao)) return
+
+    setTriCarregando(true)
+    try {
+      const triResultados = await calcularTodasNotasTRI(
+        respostasAluno,
+        gabaritoCompleto,
+        provaInfo.corDia1,
+        provaInfo.corDia2,
+        provaInfo.edicao,
+      )
+
+      // Monta NotasTRI: null para áreas sem dados, número para as que calcularam
+      const notas: NotasTRI = {
+        linguagens: triResultados.linguagens?.nota ?? null,
+        humanas:    triResultados.humanas?.nota    ?? null,
+        natureza:   triResultados.natureza?.nota   ?? null,
+        matematica: triResultados.matematica?.nota ?? null,
+      }
+      setNotasTRI(notas)
+    } catch {
+      // Falha silenciosa — mantém a correção simples visível
+      setNotasTRI(null)
+    } finally {
+      setTriCarregando(false)
+    }
   }
 
   function handleLoad(g: GabaritoSalvo) {
@@ -196,7 +232,12 @@ export function EnemCorrecaoFeature() {
         </div>
 
         <div id="section-analises">
-          <AnalysesSection resultado={resultado} />
+          <AnalysesSection
+            resultado={resultado}
+            notasTRI={notasTRI}
+            triCarregando={triCarregando}
+            edicaoTemTRI={!EDICOES_SEM_TRI.has(provaInfo.edicao)}
+          />
         </div>
       </main>
 

@@ -68,15 +68,10 @@ export interface ResultadoDetalhado extends ResultadoAnalise {
   errosPorArea: Record<AreaKey, ErrosArea[]>
 }
 
-// ── TIR (score estimation) ────────────────────────────────────────────────────
+// ── Nota TRI ──────────────────────────────────────────────────────────────────
 
-export interface ScoreRange {
-  min: number
-  avg: number
-  max: number
-  /** 0–1 fraction of total questions */
-  fraction: number
-}
+/** Nota estimada por TRI para uma área. null = dados indisponíveis (fallback simples). */
+export type NotasTRI = Record<AreaKey, number | null>
 
 // ── Gabarito salvo ────────────────────────────────────────────────────────────
 
@@ -98,6 +93,7 @@ export interface AreaMeta {
   min: number
   max: number
   colorClass: string
+  areaTRI: string  // "LC" | "CH" | "CN" | "MT"
 }
 
 export const AREAS_META: AreaMeta[] = [
@@ -109,6 +105,7 @@ export const AREAS_META: AreaMeta[] = [
     min: 1,
     max: 45,
     colorClass: 'area-card-linguagens',
+    areaTRI: 'LC',
   },
   {
     key: 'humanas',
@@ -118,6 +115,7 @@ export const AREAS_META: AreaMeta[] = [
     min: 46,
     max: 90,
     colorClass: 'area-card-humanas',
+    areaTRI: 'CH',
   },
   {
     key: 'natureza',
@@ -127,6 +125,7 @@ export const AREAS_META: AreaMeta[] = [
     min: 91,
     max: 135,
     colorClass: 'area-card-natureza',
+    areaTRI: 'CN',
   },
   {
     key: 'matematica',
@@ -136,5 +135,6 @@ export const AREAS_META: AreaMeta[] = [
     min: 136,
     max: 180,
     colorClass: 'area-card-matematica',
+    areaTRI: 'MT',
   },
 ]

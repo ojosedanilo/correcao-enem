@@ -1,7 +1,10 @@
 import { useState, useCallback } from 'react'
-import type { ProvaInfo, RespostasAluno, ResultadoDetalhado } from '../types'
+import type { ProvaInfo, RespostasAluno, ResultadoDetalhado, NotasTRI } from '../types'
 
 const EDICOES = [2025,2024,2023,2022,2021,2020,2019,2018,2017,2016,2015,2014,2013,2012,2011,2010,2009]
+
+// Edições sem dados TRI disponíveis (sem params_{ano}.json)
+export const EDICOES_SEM_TRI = new Set([2025])
 
 function defaultProvaInfo(): ProvaInfo {
   return {
@@ -16,23 +19,29 @@ export function useEnemState() {
   const [provaInfo, setProvaInfo] = useState<ProvaInfo>(defaultProvaInfo)
 
   /**
-   * respostasAluno: dicionário pronto para sua lógica de cálculo.
+   * respostasAluno: dicionário pronto para a lógica de cálculo.
    * Estrutura:
    *   {
    *     "1I": "B",   // questão de língua estrangeira (inglês)
    *     "6": "C",
-   *     ...
+   *     ...,
    *     "180": "A"
    *   }
-   * As chaves 1–5 recebem sufixo "I" ou "E" conforme a língua estrangeira selecionada.
+   * As chaves 1–5 recebem sufixo "I" ou "E" conforme a língua selecionada.
    */
   const [respostasAluno, setRespostasAluno] = useState<RespostasAluno>({})
 
   /** Texto bruto do textarea (questao\nresposta\n...) */
   const [textoGabarito, setTextoGabarito] = useState('')
 
-  /** Resultado gerado pela correção */
+  /** Resultado da correção simples (acertos/erros por área) */
   const [resultado, setResultado] = useState<ResultadoDetalhado | null>(null)
+
+  /** Notas TRI por área — null enquanto não calculadas ou indisponíveis */
+  const [notasTRI, setNotasTRI] = useState<NotasTRI | null>(null)
+
+  /** true enquanto o cálculo TRI está em andamento */
+  const [triCarregando, setTriCarregando] = useState(false)
 
   const updateProvaInfo = useCallback(<K extends keyof ProvaInfo>(key: K, value: ProvaInfo[K]) => {
     setProvaInfo(prev => ({ ...prev, [key]: value }))
@@ -69,10 +78,7 @@ export function useEnemState() {
     return dict
   }, [])
 
-  /**
-   * Atualiza uma única resposta no dicionário.
-   * Útil para inputs do gabarito manual.
-   */
+  /** Atualiza uma única resposta no dicionário. */
   const setResposta = useCallback((questao: string, valor: string) => {
     setRespostasAluno(prev => ({ ...prev, [questao]: valor }))
   }, [])
@@ -81,6 +87,7 @@ export function useEnemState() {
     setRespostasAluno({})
     setTextoGabarito('')
     setResultado(null)
+    setNotasTRI(null)
   }, [])
 
   return {
@@ -94,6 +101,10 @@ export function useEnemState() {
     carregarTextoemRespostas,
     resultado,
     setResultado,
+    notasTRI,
+    setNotasTRI,
+    triCarregando,
+    setTriCarregando,
     limparRespostas,
     EDICOES,
   }
